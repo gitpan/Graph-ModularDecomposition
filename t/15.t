@@ -18,14 +18,17 @@ BEGIN {
 #########################
 
 my $g = new Graph::ModularDecomposition;
-print STDERR "skip status: $skip\n";
+#print STDERR "skip status: $skip\n";
 $g->add_edge( 'a', 'c' );
 $g->add_edge( 'a', 'd' );
 $g->add_edge( 'b', 'd' );
 
-Graph::ModularDecomposition->debug(3);
-skip $skip, eval { $g->to_bitvector2 . '' }, '011010';
-Graph::ModularDecomposition->debug(0);
+eval {
+    open(STDERR, ">/dev/null") if -w '/dev/null';
+    Graph::ModularDecomposition->debug(3);
+    skip $skip, eval { $g->to_bitvector2 . '' }, '011010';
+    Graph::ModularDecomposition->debug(0);
+};
 skip $skip, eval { $g->to_bitvector2 . '' }, '011010';
 
 $g->add_edge( 'c', 'b' );

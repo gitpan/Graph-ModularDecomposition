@@ -11,7 +11,7 @@ Graph::ModularDecomposition - Modular decomposition of directed graphs
 =cut
 
 require Exporter;
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Graph 0.20105;
 require Graph::Directed;
@@ -683,7 +683,7 @@ eval {require Graph::Bitvector2; 1} and # alas, circular dependency here
 eval q{
     sub to_bitvector2 {
 	my $g = shift;
-	my @v = sort $g->vertices_unsorted;
+	my @v = sort $g->vertices;
 	my @bits;
 	while ( @v ) {
 	    my $x = shift @v;

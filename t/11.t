@@ -21,7 +21,7 @@ sub test11 {
     my $gd = $g->strongly_connected_graph;
     ok $g, $gd;
     ok $gd, 'a,b';
-    ok join('', $g->vertices), join('', $gd->vertices);
+    ok join('', sort $g->vertices), join('', sort $gd->vertices);
 }
 
 

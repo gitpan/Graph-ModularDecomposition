@@ -15,9 +15,12 @@ ok tree_to_string( {} ), '';
 
 my $g = new Graph::ModularDecomposition;
 ok tree_to_string( $g->modular_decomposition_EGMS ), '';
-$g->debug(3);
-ok tree_to_string( $g->modular_decomposition_EGMS ), '';
-$g->debug(0);
+eval {
+    open(STDERR, ">/dev/null") if -w '/dev/null';
+    $g->debug(3);
+    ok tree_to_string( $g->modular_decomposition_EGMS ), '';
+    $g->debug(0);
+};
 
 $g->add_edge( 'a', 'c' );
 $g->add_edge( 'a', 'd' );

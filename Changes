@@ -33,3 +33,12 @@ Revision history for Perl module Graph::ModularDecomposition.
 	conditional include of Bitvector2 conversion routine tested ok
 	test and code tweaks to increase Devel::Cover coverage
 
+0.10  20041018
+	removed workarounds for broken Graph inheritance behaviour
+	modified tests for compatibility with Graph-TNG
+
+0.11  20041031
+	debug output in tests into eval with STDERR > /dev/null
+	to_bitvector2 now uses vertices, not vertices_unsorted
+	modified 11.t and 15.t to work with Graph-TNG
+

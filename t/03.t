@@ -28,9 +28,13 @@ sub test3 {
 	=> 'a-c,a-d,b-d,c-e,c-f,d-e,d-f,e-g,e-h,f-h'
     );
     while ( my ($pairs, $r) = each %t ) {
-	Graph::ModularDecomposition->debug(3) unless $c;
-	ok( Graph::ModularDecomposition->pairstring_to_graph( $pairs ), $r );
-	Graph::ModularDecomposition->debug(0) unless $c++;
+	eval {
+	    open(STDERR, ">/dev/null") if -w '/dev/null';
+	    Graph::ModularDecomposition->debug(3) unless $c;
+	    ok( Graph::ModularDecomposition->pairstring_to_graph( $pairs ),
+		$r );
+	    Graph::ModularDecomposition->debug(0) unless $c++;
+	}
     }
 }
 

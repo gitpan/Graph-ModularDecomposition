@@ -28,12 +28,15 @@ sub test13 {
     }
     # now check some of the code with debugging on
     my $g = Graph::ModularDecomposition->pairstring_to_graph( 'ab,ac,bc,b,ac' );
-    $g->debug(1);
-    ok $g->classify, 's';
+    eval {
+	open(STDERR, ">/dev/null") if -w '/dev/null';
+	$g->debug(1);
+	ok $g->classify, 's';
 
-    $g = new Graph::ModularDecomposition;
-    ok $g->classify, 's';
-    $g->debug(0);
+	$g = new Graph::ModularDecomposition;
+	ok $g->classify, 's';
+	$g->debug(0);
+    };
 }
 
 

@@ -24,14 +24,18 @@ ok not $g->distinguishes('a','a','a');
 
 $g->add_vertex( 'b' );
 
-$g->debug(3);
-ok not $g->distinguishes('a','a','b');
+eval {
+    open(STDERR, ">/dev/null") if -w '/dev/null';
+    $g->debug(3);
+    ok not $g->distinguishes('a','a','b');
 
-$g->add_edge( 'a', 'c' );
-ok $g->distinguishes('a','b','c');
-ok $g->distinguishes('c','a','b');
-ok not $g->distinguishes('b','a','c');
-$g->debug(0);
+    $g->add_edge( 'a', 'c' );
+    ok $g->distinguishes('a','b','c');
+    ok $g->distinguishes('c','a','b');
+    ok not $g->distinguishes('b','a','c');
+    $g->debug(0);
+};
+
 ok $g->distinguishes('c','b','a');
 
 $g->add_edges( qw(a d b d) );
