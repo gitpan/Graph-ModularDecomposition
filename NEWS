@@ -1,0 +1,6 @@
+NEWS for Graph::ModularDecomposition
+
+0.10 removed workarounds for broken Graph inheritance behaviour
+     modified tests for compatibility with Graph-TNG
+0.09 first public release
+

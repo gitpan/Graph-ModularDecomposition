@@ -3,9 +3,8 @@
 
 #########################
 
-# test showing that Graph::add_edge is not idempotent
-# docs really should mention this, or otherwise multidigraphs should be
-# allowed in rest of code
+# test showing that Graph::add_edge is now idempotent
+# earlier versions of Graph were not
 
 use Test;
 BEGIN { plan tests => 1 };
@@ -16,11 +15,12 @@ use Graph::ModularDecomposition;
 sub test7 {
     print "test7\n";
     my $g = new Graph::ModularDecomposition;
-    my @p = ( 'a','b','b','c','a','b' );
-    while ( my ($t, $u) = splice @p, 0, 2 ) {
-	$g = $g->add_edge($t,$u);
+    $g->add_edges( qw( a b b c a b ) );
+    if ( $Graph::VERSION > 0.20105 ) {
+	ok $g, 'a-b,b-c';
+    } else {
+	ok $g, 'a-b,a-b,b-c';
     }
-    ok $g, 'a-b,a-b,b-c';
 }
 
 

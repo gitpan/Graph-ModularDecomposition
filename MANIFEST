@@ -3,6 +3,7 @@ MANIFEST
 Makefile.PL
 ModularDecomposition.pm
 README
+NEWS
 t/01.t
 t/02.t
 t/03.t
@@ -20,3 +21,5 @@ t/14.t
 t/15.t
 t/16.t
 t/17.t
+t/18.t
+t/19.t

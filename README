@@ -1,4 +1,4 @@
-Graph/ModularDecomposition version 0.09
+Graph/ModularDecomposition version 0.10
 =======================================
 
 Graph::ModularDecomposition implements finding the modular
@@ -41,11 +41,11 @@ recent discussion of the history of modular decomposition, see
     and Theoretical Computer Science 5 (2002), pp. 147-168.
 
 On a make test, Devel::Cover currently reports the following test
-coverage statistics (with Bitvector2 present):
+coverage statistics (without Bitvector2 present):
 
 File                           stmt branch   cond    sub    pod   time  total
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
-...h/ModularDecomposition.pm   99.7   83.7   74.1  100.0  100.0  100.0   93.4
+...h/ModularDecomposition.pm   99.7   85.7   74.1  100.0  100.0  100.0   93.8
 
 
 INSTALLATION
@@ -64,37 +64,9 @@ This module is for Perl 5.006 or later, and depends on standard
 modules Carp and Exporter.
 
 Graph::ModularDecomposition is derived from Graph::Directed, which is
-part of Jarkko Hietaniemi's Graph module.  At least version 0.20104
+part of Jarkko Hietaniemi's Graph module.  At least version 0.20105
 of Graph is required, since older versions had problems computing the
-graph of connected components.  The implementation of Graph::directed
-in version 0.20104 unfortunately breaks inheritance, so if this problem
-is detected, several stub routines are defined as a work-around.
-A more elegant fix is to apply the following patch to Graph::Base.
-This has been sent to Jarkko, but he is often very busy; hopefully
-the next release of Graph fixes this issue.
-
---- Base.pm.orig        2004-05-05 22:54:25.000000000 +0200
-+++ Base.pm     2004-05-25 09:19:57.000000000 +0200
-@@ -214,15 +214,16 @@
-            my $o = $G->{ D }; # Old directedness.
-
-            $G->{ D } = $d;
--           if (not $o) {
-+           if (defined $o and not $o) {
-                my @E = $G->edges;
-
-                while (my ($u, $v) = splice(@E, 0, 2)) {
-                    $G->add_edge($v, $u);
-                }
-+               return bless $G, 'Graph::Directed'; # Re-bless.
-            }
-
--           return bless $G, 'Graph::Directed'; # Re-bless.
-+           return $G; # Don't re-bless unless needed.
-        } else {
-            return $G->undirected(not $d);
-        }
-
+graph of connected components and had broken inheritance behaviour.
 
 Two routines to convert to Graph::Bitvector2 objects are available if
 Graph::Bitvector2 is installed.  This module has not been released yet.

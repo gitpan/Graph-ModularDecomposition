@@ -11,9 +11,9 @@ Graph::ModularDecomposition - Modular decomposition of directed graphs
 =cut
 
 require Exporter;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
-use Graph 0.20104;
+use Graph 0.20105;
 require Graph::Directed;
 
 # NB! Exporter must come before Graph::Directed in @ISA
@@ -663,54 +663,6 @@ sub classify {
     return 's' if $s !~ m/primitive|complete_1/; # matches empty string
     return 'p' if $s =~ m/primitive|complete_1/;
     return 'u';
-}
-
-
-=item
-strongly_connected_graph(),
-TransitiveClosure_Floyd_Warshall(),
-APSP_Floyd_Warshall(),
-MST_Kruskal(),
-complete(),
-copy()
-
-Stub constructors, included only if the version of Graph which is
-installed has broken inheritance behaviour.  See L<Graph::Base>.
-This is a horrible hack and you should rather patch Graph as suggested
-in the README for this module.
-
-=cut
-
-# check for broken Graph inheritance behaviour, HACK HACK HACK
-if ( ref( (new Graph::ModularDecomposition)->copy )
-	ne 'Graph::ModularDecomposition' ) {
-  eval q{
-    sub complete {
-	my $self = shift;
-	return bless $self->SUPER::complete(@_), ref $self;
-    }
-    sub copy {
-	my $self = shift;
-	return bless $self->SUPER::copy(@_), ref $self;
-    }
-    sub MST_Kruskal {
-	my $self = shift;
-	return bless $self->SUPER::MST_Kruskal(@_), ref $self;
-    }
-    sub strongly_connected_graph {
-	my $self = shift;
-	return bless $self->SUPER::strongly_connected_graph(@_), ref $self;
-    }
-    sub APSP_Floyd_Warshall {
-	my $self = shift;
-	return bless $self->SUPER::APSP_Floyd_Warshall(@_), ref $self;
-    }
-    sub TransitiveClosure_Floyd_Warshall {
-	my $self = shift;
-	return bless
-	$self->SUPER::TransitiveClosure_Floyd_Warshall(@_), ref $self;
-    }
-  }
 }
 
 
