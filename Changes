@@ -42,3 +42,9 @@ Revision history for Perl module Graph::ModularDecomposition.
 	to_bitvector2 now uses vertices, not vertices_unsorted
 	modified 11.t and 15.t to work with Graph-TNG
 
+0.12  20051028
+	fixed 12.t sometimes failing due to nondeterministic ordering
+	added canonical_form() to try to keep vertex lists ordered
+	small documentation fixes
+	added pod.t pod-coverage.t META.yml
+

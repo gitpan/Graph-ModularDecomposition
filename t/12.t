@@ -6,7 +6,7 @@
 # check tree_to_string
 
 use Test;
-BEGIN { plan tests => 5 };
+BEGIN { plan tests => 6 };
 use Graph::ModularDecomposition qw( tree_to_string );
 
 #########################
@@ -24,11 +24,15 @@ eval {
 
 $g->add_edge( 'a', 'c' );
 $g->add_edge( 'a', 'd' );
-ok tree_to_string( $g->modular_decomposition_EGMS ),
-    'linear[acd]([a];complete_0[cd]([c];[d]))';
+$g->canonical_form(1);
+# string representation of tree is somewhat nondeterministic
+ok(tree_to_string( $g->modular_decomposition_EGMS ),
+    qr/linear\[...\]\(.*complete_0\[..\]\(\[.\];\[.\]\)/);
 
+ok $g->canonical_form(), 1;
 Graph::ModularDecomposition->debug(1);
 $g->add_edge( 'b', 'd' );
-ok tree_to_string( $g->modular_decomposition_EGMS ),
-    'primitive[abcd]([a];[b];[c];[d])';
+# string representation of tree is somewhat nondeterministic
+ok(tree_to_string( $g->modular_decomposition_EGMS ),
+    qr/primitive\[....\]\(\[.\];\[.\];\[.\];\[.\]\)/);
 

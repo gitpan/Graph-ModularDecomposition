@@ -1,0 +1,10 @@
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Graph-ModularDecomposition
+version:      0.12
+version_from: ModularDecomposition.pm
+installdirs:  site
+requires:
+    Graph:                         0.20105
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.12

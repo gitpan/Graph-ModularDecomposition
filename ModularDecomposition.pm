@@ -11,7 +11,7 @@ Graph::ModularDecomposition - Modular decomposition of directed graphs
 =cut
 
 require Exporter;
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use Graph 0.20105;
 require Graph::Directed;
@@ -136,6 +136,36 @@ sub debug {
 }
 
 
+=item canonical_form()
+
+    my $g = new Graph::ModularDecomposition;
+    Graph::ModularDecomposition->canonical_form(1); # on (default)
+    Graph::ModularDecomposition->canonical_form(0); # turn it off
+    $g->canonical_form(1); # same thing
+    $g->canonical_form(0); # off
+    print "yes" if $g->canonical_form();
+
+Manipulates whether this module keeps modular decomposition trees in
+"canonical" form, where lists of vertices are kept sorted.  This allows
+tree_to_string() on two isomorphic decomposition trees to produce the
+same output (well, sometimes -- a more general solution requires an
+isomorphism test).  Canonical form forces sorting of vertices in several
+places, which will slow down some of the algorithms.  When called with
+no arguments, returns the current state.
+
+=cut
+
+my $Canonical_form = 0;
+
+sub canonical_form {
+    my $class = shift;
+    if ( ref($class) ) { $class = ref($class) }
+    my $cf = shift;
+    return $Canonical_form unless defined $cf;
+    $Canonical_form = $cf;
+}
+
+
 =item new()
 
     my $g = new Graph::ModularDecomposition;
@@ -199,8 +229,8 @@ sub pairstring_to_graph {
     # add some edges...
     print "transitive" if $g->check_transitive;
 
-Returns 1 if input digraph is transitive, '' otherwise.  May break
-if Graph::vertices_unsorted is set.
+Returns 1 if input digraph is transitive, '' otherwise.  May break if
+Graph::stringify lists vertices in unsorted order.
 
 =cut
 
@@ -468,8 +498,10 @@ Y:	foreach my $y ( $g->vertices ) {
 
     print tree_to_string( $t );
 
-String representation of decomposition tree.  Returns empty string
-for an empty decomposition tree.  Needs to be explicitly imported.
+String representation of decomposition tree.  Returns empty string for
+an empty decomposition tree.  Needs to be explicitly imported.  If
+Graph::vertices returns the vertices in unsorted order, then isomorphic
+trees can have different string representations.
 
 =cut
 
@@ -512,7 +544,7 @@ sub partition_to_string {
 
     use Graph::ModularDecomposition;
     $g = new Graph::ModularDecomposition;
-    $m = $h->modular_decomposition_EGMS;
+    $m = $g->modular_decomposition_EGMS;
 
 Compute modular decomposition tree of the input, which must be
 a Graph::ModularDecomposition object, using algorithm 6.1 of
@@ -550,7 +582,11 @@ sub modular_decomposition_EGMS {
     }
     $t->{type} = 'leaf';
     $t->{children} = [];
-    $t->{value} = join '|', $g->vertices;
+    if ($g->canonical_form()) {
+	$t->{value} = join('|', sort($g->vertices));
+    } else {
+	$t->{value} = join('|', $g->vertices);
+    }
     $t->{col} = '0';
 
     if ( scalar $g->vertices == 1 ) {
@@ -574,7 +610,11 @@ sub modular_decomposition_EGMS {
 	foreach my $s ( $Gdd->vertices ) {
 	    push @s, split(/\+/, $s);
 	}
-	$u->{value} = join '', $v, @s;
+	if ($g->canonical_form()) {
+	    $u->{value} = join('', sort($v, @s));
+	} else {
+	    $u->{value} = join('', ($v, @s));
+	}
 	my $w = {};
 	$w->{type} = 'leaf';
 	$w->{children} = [];
@@ -713,12 +753,12 @@ Andras Salamon, E<lt>andras@dns.netE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2004, Andras Salamon.
+Copyright 2004-5, Andras Salamon.
 
 This code is distributed under the same copyright terms as Perl itself.
                                                                                 
 =head1 SEE ALSO
 
-L<perl>, L<Graph::Undirected>, L<Graph::Base>, L<Graph::Bitvector2>.
+L<perl>, L<Graph>, L<Graph::Bitvector2>.
 
 =cut

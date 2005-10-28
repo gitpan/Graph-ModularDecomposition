@@ -1,4 +1,4 @@
-Graph/ModularDecomposition version 0.11
+Graph/ModularDecomposition version 0.12
 =======================================
 
 Graph::ModularDecomposition implements finding the modular
@@ -9,18 +9,6 @@ have used the modular decomposition tree as a basic building block.
 This implementation derives from Graph::Directed, providing additional
 methods.  If you need to decompose an undirected graph, represent it as
 a directed graph by adding two directed edges for each undirected edge.
-
-A simple example application of these routines is to construct and
-search the modular decomposition tree of a directed graph to determine
-if it is node-series-parallel.  This can also be determined using
-the Valdes-Tarjan-Lawler algorithm published in 1982, but modular
-decomposition is more general.  The method classify() uses the modular
-decomposition tree to classify a directed graph as non-transitive,
-or for transitive digraphs, as series-parallel (linear or parallel
-modules only), decomposable (not series-parallel, but with at least
-one non-primitive module), indecomposable (primitive), decomposable
-but consisting of primitive or series modules only (only applies to
-graphs of at least 7 vertices), or unclassified (should never apply).
 
 The code here is based on algorithm 6.1 for modular decomposition of
 two-structures, from
@@ -39,6 +27,18 @@ recent discussion of the history of modular decomposition, see
     E. Dahlhaus, J. Gustedt and R. M. McConnell, "Partially
     Complemented Representations of Digraphs", Discrete Mathematics
     and Theoretical Computer Science 5 (2002), pp. 147-168.
+
+A simple example application of these routines is to construct and
+search the modular decomposition tree of a directed graph to determine
+if it is node-series-parallel.  This can also be determined using
+the Valdes-Tarjan-Lawler algorithm published in 1982, but modular
+decomposition is more general.  The method classify() uses the modular
+decomposition tree to classify a directed graph as non-transitive,
+or for transitive digraphs, as series-parallel (linear or parallel
+modules only), decomposable (not series-parallel, but with at least
+one non-primitive module), indecomposable (primitive), decomposable
+but consisting of primitive or series modules only (only applies to
+graphs of at least 7 vertices), or unclassified (should never apply).
 
 On a make test, Devel::Cover currently reports the following test
 coverage statistics (without Bitvector2 present):
@@ -60,8 +60,8 @@ To install this module, do the usual:
 
 DEPENDENCIES
 
-This module is for Perl 5.006 or later, and depends on standard
-modules Carp and Exporter.
+This module is for Perl 5.006 or later, and depends on standard modules
+Carp and Exporter.  For the Pod tests, Test::More is required.
 
 Graph::ModularDecomposition is derived from Graph::Directed, which is
 part of Jarkko Hietaniemi's Graph module.  At least version 0.20105
@@ -76,5 +76,5 @@ COPYRIGHT AND LICENCE
 
 This module is licensed on the same copyright terms as Perl.
 
-Copyright (C) 2004 by Andras Salamon <andras@dns.net>
+Copyright (C) 2004-5 by Andras Salamon <andras@dns.net>
 

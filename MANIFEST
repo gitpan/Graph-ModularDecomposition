@@ -23,3 +23,6 @@ t/16.t
 t/17.t
 t/18.t
 t/19.t
+t/pod.t
+t/pod-coverage.t
+META.yml                                Module meta-data (added by MakeMaker)
