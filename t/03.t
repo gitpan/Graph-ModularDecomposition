@@ -89,8 +89,10 @@ sub test3c {
     );
     while ( my ($pairs, $r) = each %t ) {
 	Graph::ModularDecomposition->debug(3) unless $c;
-	ok( Graph::ModularDecomposition->pairstring_to_graph( $pairs )
-	    ->factor( [ ['a','b'], ['c','d','e','f'], ['g','h'] ] ), $r );
+	my $res = Graph::ModularDecomposition->pairstring_to_graph( $pairs )
+	    ->factor( [ ['a','b'], ['c','d','e','f'], ['g','h'] ] );
+	$res =~ s/\|//g; # 0.13 introduced VSEP
+	ok( $res, $r );
 	Graph::ModularDecomposition->debug(0) unless $c++;
     }
 }

@@ -11,7 +11,7 @@ Graph::ModularDecomposition - Modular decomposition of directed graphs
 =cut
 
 require Exporter;
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use Graph 0.20105;
 require Graph::Directed;
@@ -125,6 +125,12 @@ to STDERR.  Object-level debugging is not yet supported.
 =cut
 
 use Carp;
+
+my $VSEP = '|'; # string used to separate vertices
+my $WSEP = '\|'; # regexp used to separate vertices
+my $PSEP = '\+'; # regexp used to separate elements of partition
+my $QSEP = '+'; # string used to separate elements of partition
+
 my $Debug = 0;
 
 sub debug {
@@ -189,7 +195,7 @@ sub new {
     my $g = Graph::ModularDecomposition
 	->pairstring_to_graph( 'ac, ad, bd' );
     my $h = $g->pairstring_to_graph( 'a-c,  a-d,b-d' ); # same thing
-    my $h = $g->pairstring_to_graph( 'a-c,  a-d,b-d' ); # same thing
+    my $h = $g->pairstring_to_graph( 'a,b,c,d,a-c,a-d,b-d' ); # same thing
 
     use Graph::ModularDecomposition qw( pairstring_to_graph );
     my $k = pairstring_to_graph( 'Graph::ModularDecomposition',
@@ -309,7 +315,7 @@ sub restriction {
     if ( $Debug > 2 ) { print STDERR 'restriction(', ref($G), ")\n" }
     my $h = ($G->copy)->delete_vertices( setminus( [$G->vertices], [@_] ) );
     if ( $Debug > 1 ) {
-	print STDERR 'restriction(', $G, '|', join('+', @_), ') = ', $h, "\n"
+	print STDERR 'restriction(', $G, '|', join($QSEP, @_), ') = ', $h, "\n"
     }
     return $h;
 }
@@ -333,7 +339,7 @@ sub factor {
     foreach my $X ( @{$P} ) {
 	print STDERR "factor# X = $X\n" if $Debug > 1;
 	print STDERR "factor# \@X = @$X\n" if $Debug > 1;
-	my $newnode = join '', @{$X}; # turn nodes a, b, c into new node abc
+	my $newnode = join $VSEP, @{$X}; # turn nodes a, b, c into new node abc
 	print STDERR "factor# newnode = $newnode\n" if $Debug > 1;
 	my $a = ${$X}[0];
 	print STDERR "factor# representative node $a\n" if $Debug > 1;
@@ -536,7 +542,7 @@ empty partition.  Needs to be explicitly imported.
 =cut
 
 sub partition_to_string {
-    return join ',', sort (map { join '+', sort @{$_} } @{+shift});
+    return join ',', sort (map { join $QSEP, sort @{$_} } @{+shift});
 }
 
 
@@ -557,7 +563,7 @@ The decomposition tree consists of nodes with attributes: 'type' is
 a string matching /^leaf|primitive|complete|linear$/, 'children' is
 a reference to a potentially empty list of pointers to other nodes,
 'value' is a string with the vertices in the decomposition defined
-by the tree, separated by '|', and 'col' is a string containing the
+by the tree, separated by '|' (VSEP), and 'col' is a string containing the
 colour of the module, matching /^0|1|01$/.  A node with 'type' of
 'complete' is parallel if 'col' is '0' and series if 'col' is '1'.
 A node with 'type' of 'linear' has 'col' of '01'.  Use the function
@@ -583,9 +589,9 @@ sub modular_decomposition_EGMS {
     $t->{type} = 'leaf';
     $t->{children} = [];
     if ($g->canonical_form()) {
-	$t->{value} = join('|', sort($g->vertices));
+	$t->{value} = join($VSEP, sort($g->vertices));
     } else {
-	$t->{value} = join('|', $g->vertices);
+	$t->{value} = join($VSEP, $g->vertices);
     }
     $t->{col} = '0';
 
@@ -608,7 +614,7 @@ sub modular_decomposition_EGMS {
 	print STDERR $B, "\@f=[@f]\n" if $Debug;
 	my @s;
 	foreach my $s ( $Gdd->vertices ) {
-	    push @s, split(/\+/, $s);
+	    push @s, split(/$PSEP/, $s);
 	}
 	if ($g->canonical_form()) {
 	    $u->{value} = join('', sort($v, @s));
@@ -625,7 +631,7 @@ sub modular_decomposition_EGMS {
 	$Gdd->delete_vertices( @f );
 	my @F;
 	foreach my $f ( @f ) {
-	    foreach my $F ( split /\+/, $f ) {
+	    foreach my $F ( split /$PSEP/, $f ) {
 		push @F, $F unless grep $F eq $_, @F;
 	    }
 	}
@@ -645,8 +651,8 @@ sub modular_decomposition_EGMS {
 	}
 	print STDERR $B, 'u = ', tree_to_string( $u ), "\n" if $Debug;
 	foreach my $X ( @F ) {
-	    my $m = $g->restriction( split //, $X )
-		    ->modular_decomposition_EGMS; # single-char vertex names!
+	    my $m = $g->restriction( split /$WSEP/, $X )
+		    ->modular_decomposition_EGMS;
 	    if ( defined $m->{col}
 		and ( $u->{col} eq $m->{col} )
 		and (

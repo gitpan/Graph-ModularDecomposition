@@ -48,3 +48,8 @@ Revision history for Perl module Graph::ModularDecomposition.
 	small documentation fixes
 	added pod.t pod-coverage.t META.yml
 
+0.13  20051211
+	VSEP/WSEP and QSEP/PSEP so now allows multicharacter node labels
+	changed factor() to take this change into account
+	small documentation fix
+
